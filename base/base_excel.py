@@ -1,87 +1,109 @@
-import xlrd
-import xlwt
+# -*- coding: utf-8 -*-
+"""
+兼容 Python 3.8 的 .xlsx 读写工具
+读取：openpyxl -> list[dict]
+写入：openpyxl <- list[dict]
+"""
+from typing import List, Dict, Optional          # 兼容 3.8 泛型
+from openpyxl import load_workbook, Workbook     # 读写 xlsx
 
 
-class ExcelRead(object):
-    def __init__(self, excel_path, sheet_name="Sheet1"):
-        self.data = xlrd.open_workbook(excel_path)
-        self.table = self.data.sheet_by_name(sheet_name)
-        self.keys = self.table.row_values(0)  #读取第一行的key值
-        self.rowNum = self.table.nrows  #获取总行数
-        self.colNum = self.table.ncols  #获取总列数
+# -------------------- 读取 --------------------
+class ExcelRead:
+    """
+    读取 *.xlsx 文件
+    用法：
+        excel = ExcelRead("demo.xlsx", "Sheet1")
+        data  = excel.dict_data()   # List[Dict]
+    """
 
-    def dict_data(self):  #读取表格内全部的数据[{}]
-        if self.rowNum <= 1:
-            print("总行数小于等于1")
-        else:
-            test_data = []
-            key = 1
-            for i in range(self.rowNum - 1):
-                data_item = {}
-                value = self.table.row_values(key)
-                key = key + 1
-                for x in range(self.colNum):
-                    data_item[x] = value[x]
-                test_data.append(data_item)
-            return test_data
+    def __init__(self, excel_path: str, sheet_name: str = "Sheet1"):
+        """
+        加载工作簿
+        :param excel_path: 文件路径
+        :param sheet_name: 工作表名
+        """
+        self.wb = load_workbook(excel_path)
+        self.ws = self.wb[sheet_name]
+        self.row_num = self.ws.max_row
+        self.col_num = self.ws.max_column
+        # 第一行当表头
+        self.headers: List[str] = [
+            self.ws.cell(row=1, column=j).value for j in range(1, self.col_num + 1)
+        ]
 
-    def get_row_info(self, row):  #读取表格内行的数据
-        if self.rowNum <= 1:
-            row_data = None
-        else:
-            test_data = self.dict_data()
-            row_data = test_data[row - 2]
-        return row_data
+    def dict_data(self) -> List[Dict[str, object]]:
+        """转为 List[Dict] 返回"""
+        if self.row_num <= 1:
+            print("总行数 <= 1，无数据")
+            return []
 
-    def get_col_info(self, name):  #读取表格中列的信息
-        col_data = []
-        test_data = self.dict_data()
-        for data in test_data:
-            col_data.append(data[name])
-        return col_data
+        ret: List[Dict[str, object]] = []
+        for row in range(2, self.row_num + 1):
+            ret.append(
+                {self.headers[col - 1]: self.ws.cell(row=row, column=col).value
+                 for col in range(1, self.col_num + 1)}
+            )
+        return ret
 
-    def get_cell_info(self, row, col):  #读取表格中单元格的信息
-        if self.rowNum <= 1:
-            cell_data = None
-        else:
-            test_data = self.dict_data()
-            cell_data = test_data[row - 2][col]
-        return cell_data
+    def get_row_info(self, row: int) -> Optional[Dict[str, object]]:
+        """取第 row 行（从 2 开始）数据"""
+        return None if self.row_num <= 1 else self.dict_data()[row - 2]
 
+    def get_col_info(self, col_name: str) -> List[object]:
+        """取整列数据"""
+        return [row[col_name] for row in self.dict_data()]
 
-class ExcelWrite(object):
-    def __init__(self, sheet_name="Sheet1"):
-        self.workbook = xlwt.Workbook(encoding='utf-8')
-        self.worksheet = self.workbook.add_sheet(sheet_name)
-
-    def set_header(self, list_data):  #设置数据标题
-        if not isinstance(list_data, list):
-            raise TypeError("数据必须是列表")
-        key_data = list(set(list_data[0].keys()))
-        num = len(key_data)
-        for cell in range(num):
-            self.worksheet.write(0, cell, label=key_data[cell])
-
-    def write_excl(self, list_data, excel_path):  #写入数据
-        if not isinstance(list_data, list):
-            raise TypeError("数据必须是列表")
-        self.set_header(list_data)
-        row_num = len(list_data)
-        for row in range(row_num):
-            value = list(list_data[row].values())
-            col_num = len(value)
-            for col in range(col_num):
-                self.worksheet.write(row + 1, col, value[col])
-        self.workbook.save(excel_path)
+    def get_cell_info(self, row: int, col_name: str) -> object:
+        """取单个单元格"""
+        return self.get_row_info(row)[col_name]
 
 
+# -------------------- 写入 --------------------
+class ExcelWrite:
+    """
+    写入 *.xlsx
+    用法：
+        w = ExcelWrite("Sheet1")
+        w.write_excel(data, "result.xlsx")
+    """
+
+    def __init__(self, sheet_name: str = "Sheet1"):
+        self.wb = Workbook()
+        self.ws = self.wb.active
+        self.ws.title = sheet_name
+
+    def set_header(self, data: List[Dict[str, object]]) -> None:
+        """根据字典 key 写表头（第一行）"""
+        if not data:
+            return
+        for col, key in enumerate(data[0].keys(), 1):
+            self.ws.cell(row=1, column=col, value=key)
+
+    def write_excel(self, data: List[Dict[str, object]], save_path: str) -> None:
+        """
+        将 List[Dict] 数据完整写入 .xlsx 并保存
+        :param data: 待写入数据，外层 List 每个元素为一行 Dict
+        :param save_path: 输出文件路径（须以 .xlsx 结尾）
+        """
+        self.set_header(data)  # 写入表头（第一行）
+        for row_idx, row_dict in enumerate(data, start=2):  # 从第二行开始写数据
+            for col_idx, value in enumerate(row_dict.values(), start=1):
+                self.ws.cell(row=row_idx, column=col_idx, value=value)
+        self.wb.save(save_path)  # 落盘
+        print(f"已保存 -> {save_path}")
+
+
+# -------------------- 自测 --------------------
 if __name__ == "__main__":
-    # Data = ExcelWrite()
-    # filepath = r"./excelFile.xls"
-    # l = [{'姓名': '张三', '年龄': 18, '职业': '学生'},
-    #      {'姓名': '李四', '年龄': 19, '职业': '学生'},
-    #      {'姓名': '王五', '年龄': 20, '职业': '学生'}]
-    # Data.excl_write(l, filepath)
-    path = r'C:\Users\v_zhquanli\PycharmProjects\AutoTestLearning\data\data_driver\yaml_driver\test.yaml'
-    data = read_
-    print(col)
+    # 1. 读示例
+    read_path = r"../data/data_driver/excel_driver/project_auto_test/test.xlsx"
+    reader = ExcelRead(read_path, "Sheet1")
+    print("读取结果：", reader.dict_data())
+
+    # 2. 写示例
+    demo: List[Dict[str, object]] = [
+        {"ID": 1, "用户名": "admin", "密码": "123456"},
+        {"ID": 2, "用户名": "guest", "密码": "abcde"}
+    ]
+    # ExcelWrite("Sheet1").write_excel(demo, "output_demo.xlsx")

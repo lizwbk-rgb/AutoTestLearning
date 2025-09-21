@@ -12,5 +12,7 @@ class BasePath(object):
     DRIVER_DIR = os.path.join(DATA_DIR, 'driver')
     LOG_DIR = os.path.join(PROJECT_ROOT, 'log')
     ALLURE_DIR = os.path.join(PROJECT_ROOT, 'reports', 'allure')
+    ALLURE_REPORT_DIR = os.path.join(ALLURE_DIR, 'report')
+    ALLURE_RESULT_DIR = os.path.join(ALLURE_DIR, 'result')
     HTML_DIR = os.path.join(PROJECT_ROOT, 'reports', 'html')
     XML_DIR = os.path.join(PROJECT_ROOT, 'reports', 'xml')
