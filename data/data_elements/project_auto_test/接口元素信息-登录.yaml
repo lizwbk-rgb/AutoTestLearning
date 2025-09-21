@@ -1,0 +1,25 @@
+home_api: #home接口
+  method: post
+  url: /web/guest/home
+  headers:
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko"
+
+login_api: #登录接口
+  method: post
+  url: /web/guest/home
+  headers:
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64; Trident/7.0; rv:11.0) like Gecko"
+  params:
+    "p_p_id": "58"
+    "p_p_lifecycle": "1"
+    "p_p_state": "normal"
+    "p_p_mode": "view"
+    "p_p_col_id": "column-1"
+    "p_p_col_count": "1"
+    "saveLastPath": "0"
+    "_58_struts_action": "/login/view"
+    "_58_redirect": "update"
+  data:
+    "_58_redirect": ""
+    "_58_login": "${username}"
+    "_58_password": "${password}"
