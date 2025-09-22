@@ -21,7 +21,7 @@ from base_yaml import read_yaml
 from base_excel import ExcelRead
 
 
-# logger = Logger('base_data.py').get_logger()
+logger = Logger('base_data.py').get_logger()
 
 
 # ---------------------------------------------------------------------------

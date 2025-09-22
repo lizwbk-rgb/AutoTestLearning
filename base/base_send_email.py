@@ -13,9 +13,8 @@
 import os
 import smtplib
 from datetime import datetime
-from email.mime.application import MIMEApplication
-from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 # 项目内部公共库
 from base.base_path import BasePath as BP
