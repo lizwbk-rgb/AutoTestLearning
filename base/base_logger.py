@@ -19,8 +19,8 @@ class Logger(object):
         self.formatter = logging.Formatter(config['formatter'])
         self.streamHandler.setFormatter(self.formatter)
         self.fileHandler.setFormatter(self.formatter)
-        self.streamHandler.setLevel(config['stream_handle_level'])
-        self.fileHandler.setLevel(config['file_handle_level'])
+        self.streamHandler.setLevel(config['stream_handler_level'])
+        self.fileHandler.setLevel(config['file_handler_level'])
         self.logger.addHandler(self.streamHandler)
         self.logger.addHandler(self.fileHandler)
 

@@ -9,6 +9,7 @@ class BasePath(object):
     DATA_DRIVE_DIR = os.path.join(DATA_DIR, 'data_driver')
     DATA_ELEMENTS_DIR = os.path.join(DATA_DIR, 'data_elements')
     DATA_TEMP_DIR = os.path.join(DATA_DIR, 'temp')
+    SCREENSHOT_DIR = os.path.join(DATA_TEMP_DIR, 'screenshots')
     DRIVER_DIR = os.path.join(DATA_DIR, 'driver')
     LOG_DIR = os.path.join(PROJECT_ROOT, 'log')
     ALLURE_DIR = os.path.join(PROJECT_ROOT, 'reports', 'allure')
