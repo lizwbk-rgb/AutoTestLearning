@@ -44,7 +44,7 @@ def init_file_path(file_path):
     """
     doc_path = {}
     path = None
-    # os.walk 返回三元组 (dirpath, dirnames, filenames)
+    # os.walk 返回三元组 (dirpath, surnames, filenames)
     path_lists = [item for item in os.walk(file_path)]
 
     for lists_item in path_lists:
