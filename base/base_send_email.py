@@ -18,7 +18,7 @@ from email.mime.text import MIMEText
 
 # 项目内部公共库
 from base.base_path import BasePath as BP
-from utils import read_config_ini, make_zip
+from base.utils import read_config_ini, make_zip
 
 
 class HandleEmail(object):
@@ -44,15 +44,18 @@ class HandleEmail(object):
     # ------------------------------------------------------------------
     # 构造邮件内容组件
     # ------------------------------------------------------------------
-    def add_text(self, text):
+    @staticmethod
+    def add_text(_text):
         """生成纯文本 MIMEText 对象"""
-        return MIMEText(text, 'plain', 'utf-8')
+        return MIMEText(_text, 'plain', 'utf-8')
 
-    def add_html_text(self, html):
+    @staticmethod
+    def add_html_text(html):
         """生成 HTML 格式 MIMEText 对象"""
         return MIMEText(html, 'html', 'utf-8')
 
-    def add_accessory(self, file_path):
+    @staticmethod
+    def add_accessory(file_path):
         """
         生成附件对象
         参数
@@ -64,7 +67,7 @@ class HandleEmail(object):
         MIMEText
             可用于 attach 的附件对象
         """
-        resource = MIMEText(open(file_path, 'rb').read(), 'base64', 'utf-8')
+        resource = MIMEText(str(open(file_path, 'rb').read()), 'base64', 'utf-8')
         # 设置附件头，filename 会显示在邮件客户端
         resource.add_header('Content-Disposition', 'attachment',
                             filename=os.path.basename(file_path))

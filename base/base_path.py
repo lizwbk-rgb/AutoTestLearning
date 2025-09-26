@@ -10,6 +10,7 @@ class BasePath(object):
     DATA_ELEMENTS_DIR = os.path.join(DATA_DIR, 'data_elements')
     DATA_TEMP_DIR = os.path.join(DATA_DIR, 'temp')
     SCREENSHOT_DIR = os.path.join(DATA_TEMP_DIR, 'screenshots')
+    SCREENSHOT_PIC = os.path.join(SCREENSHOT_DIR, 'test_error.png')
     DRIVER_DIR = os.path.join(DATA_DIR, 'driver')
     LOG_DIR = os.path.join(PROJECT_ROOT, 'log')
     ALLURE_DIR = os.path.join(PROJECT_ROOT, 'reports', 'allure')
@@ -17,3 +18,4 @@ class BasePath(object):
     ALLURE_RESULT_DIR = os.path.join(ALLURE_DIR, 'result')
     HTML_DIR = os.path.join(PROJECT_ROOT, 'reports', 'html')
     XML_DIR = os.path.join(PROJECT_ROOT, 'reports', 'xml')
+    TEST_SUITS_DIR = os.path.join(PROJECT_ROOT, 'test_suits')
