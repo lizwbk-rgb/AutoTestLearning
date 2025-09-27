@@ -135,3 +135,17 @@ def pytest_runtest_makereport(item, call):
     report.extra = extra
     report.description = str(item.function.__doc__)
 
+def pytest_collection_modifyitems(session, config, items):
+    if '--co' in config.invocation_params.args:
+        test_cases = {}
+        for item in items:
+            case_class_name = '::'.join(item.nodeid.split('::')[0:2])
+            case_name = item.nodeid.split('::')[-1]
+            if not test_cases.get(case_class_name, None):
+                test_cases[case_class_name] = {}
+            if not test_cases[case_class_name].get(case_name, None):
+                test_cases[case_class_name]['comment'] = item.cls.__doc__
+            test_cases[case_class_name][case_name] = item.function.__doc__
+        temp_cases_path = BP.TEMP_CASES
+        write_yaml(temp_cases_path, test_cases)
+

@@ -1,5 +1,6 @@
 import os
 import zipfile
+import shutil
 from configparser import RawConfigParser
 
 
@@ -21,6 +22,12 @@ def make_zip(local_path, pack_name):
     return pack_name
 
 
+
 def delete_all_file(path):
-    for file_name in os.listdir(path):
-        os.unlink(os.path.join(path, file_name))
+    """清空目录：文件直接删，目录用 rmtree"""
+    for name in os.listdir(path):
+        full = os.path.join(path, name)
+        if os.path.isfile(full) or os.path.islink(full):
+            os.unlink(full)
+        elif os.path.isdir(full):
+            shutil.rmtree(full)

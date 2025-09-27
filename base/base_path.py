@@ -9,6 +9,8 @@ class BasePath(object):
     DATA_DRIVE_DIR = os.path.join(DATA_DIR, 'data_driver')
     DATA_ELEMENTS_DIR = os.path.join(DATA_DIR, 'data_elements')
     DATA_TEMP_DIR = os.path.join(DATA_DIR, 'temp')
+    TEST_CASES = os.path.join(DATA_TEMP_DIR, 'test_cases.yaml')
+    TEMP_CASES = os.path.join(DATA_TEMP_DIR, 'temp_cases.yaml')
     SCREENSHOT_DIR = os.path.join(DATA_TEMP_DIR, 'screenshots')
     SCREENSHOT_PIC = os.path.join(SCREENSHOT_DIR, 'test_error.png')
     DRIVER_DIR = os.path.join(DATA_DIR, 'driver')
@@ -19,3 +21,4 @@ class BasePath(object):
     HTML_DIR = os.path.join(PROJECT_ROOT, 'reports', 'html')
     XML_DIR = os.path.join(PROJECT_ROOT, 'reports', 'xml')
     TEST_SUITS_DIR = os.path.join(PROJECT_ROOT, 'test_suits')
+
