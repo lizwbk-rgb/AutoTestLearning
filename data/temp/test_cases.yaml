@@ -1,2 +1,5 @@
-test_suits/project_auto_client/test_01.py::TestCase:
-- test_01
+test_suits/student_management_system/test_student_management.py::TestLogin:
+- test_01[login_data0]
+- test_01[login_data1]
+- test_01[login_data2]
+- test_01[login_data3]

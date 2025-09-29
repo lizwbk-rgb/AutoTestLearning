@@ -6,8 +6,8 @@ import subprocess
 
 # ---------- 环境变量 ----------
 # 把 JAVA_HOME 注入当前进程，避免 allure 再次报找不到 Java
-os.environ['JAVA_HOME'] = r'E:\Application software\Java\jdk1.8.0_202'
-os.environ['PATH'] = os.environ.get('PATH', '') + r';E:\Application software\Java\jdk1.8.0_202\bin'
+os.environ['JAVA_HOME'] = r'D:\application\Java\jdk-11'
+os.environ['PATH'] = os.environ.get('PATH', '') + r';D:\application\Java\jdk-11\bin'
 
 # ---------- 项目根目录 ----------
 PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -27,9 +27,9 @@ gm.set_value('DATA_DRIVER_PATH',
              os.path.join(BP.DATA_DRIVE_DIR, config['项目运行设置']['DATA_DRIVER_TYPE']))
 
 # ---------- allure 路径 ----------
-allure_path = r'C:\allure-2.35.1\bin\allure.bat'
-result_dir  = BP.ALLURE_RESULT_DIR
-report_dir  = BP.ALLURE_REPORT_DIR
+allure_path = r'C:\Users\v_zhquanli\PycharmProjects\AutoTestLearning\ext_tools\allure-2.35.1\bin\allure.bat'
+result_dir = BP.ALLURE_RESULT_DIR
+report_dir = BP.ALLURE_REPORT_DIR
 
 print(f'Allure path: {allure_path}')
 print(f'Result dir : {result_dir}')
@@ -44,10 +44,11 @@ subprocess.run([allure_path, 'generate', result_dir,
                 '-o', report_dir, '--clean'], check=True)
 print('Allure generate command executed successfully.')
 
+
 # ---------- 主运行函数 ----------
 def run_main():
     run_config = gm.get_value('CONFIG_INFO')['项目运行设置']
-    test_case  = os.path.join(BP.TEST_SUITS_DIR, run_config['TEST_PROJECT'])
+    test_case = os.path.join(BP.TEST_SUITS_DIR, run_config['TEST_PROJECT'])
     print(f'Test case directory: {test_case}')
 
     if run_config['REPORT_TYPE'] == 'ALLURE':
@@ -76,6 +77,7 @@ def run_main():
         text = '本邮件由系统自动发出，无需回复！\n各位同事，大家好！以下是本次测试报告。'
         elem.send_public_email(text, run_config['REPORT_TYPE'])
         print(f"邮件发送成功：{run_config['REPORT_TYPE']}")
+
 
 # ---------- 入口 ----------
 if __name__ == '__main__':

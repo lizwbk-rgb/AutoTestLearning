@@ -15,7 +15,7 @@ insert_js_html = False
 
 def pytest_addoption(parser):
     parser.addoption(
-        "--browser", action="store_true", default=config['WEB自动化配置']['browser'],
+        "--browser-name", action="store_true", default=config['WEB自动化配置']['browser'],
         help="browser option: firefox or chrome or ie"
     )
     parser.addoption(
@@ -28,7 +28,7 @@ def driver(request):
     try:
         from selenium import webdriver
         test_driver = None
-        driver_name = request.config.getoption("--browser")
+        driver_name = request.config.getoption("--browser-name")
         if driver_name == 'ie':
             test_driver = webdriver.Ie(executable_path=os.path.join(BP.DRIVER_DIR, 'IEDriverServer.exe'))
         elif driver_name == 'firefox':

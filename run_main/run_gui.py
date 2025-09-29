@@ -1,6 +1,7 @@
 import os
 import sys
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) #根目录
+
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  #根目录
 sys.path.append(PROJECT_ROOT)
 from base.base_container import GlobalManager
 from base.base_send_email import HandleEmail
@@ -15,13 +16,14 @@ from base.base_yaml import read_yaml
 
 config = read_config_ini(BP.CONFIG_FILE)
 gm = GlobalManager()
-gm.set_value('CONFIG_INFO',config)
+gm.set_value('CONFIG_INFO', config)
 run_config = gm.get_value('CONFIG_INFO')['项目运行设置']
+
 
 @contextmanager
 def output_to_null():
     f = open(os.devnull, 'w')
-    saved_stdout= sys.stdout
+    saved_stdout = sys.stdout
     sys.stdout = f
     yield
     sys.stdout = saved_stdout
@@ -30,7 +32,7 @@ def output_to_null():
 def run_collect_testcase(_v):
     with output_to_null():
         try:
-            test_pj = os.path.join(BP.TEST_SUITS_DIR,run_config['TEST_PROJECT'])
+            test_pj = os.path.join(BP.TEST_SUITS_DIR, run_config['TEST_PROJECT'])
             res = pytest.main(['-s', '-q', '--co', test_pj])
         except Exception as e:
             sys.exit('收集用例时发生错误,{}'.format(e))
@@ -51,7 +53,7 @@ def run_main():
                 if key == "comment":
                     continue
                 testcase = key
-                testcase = os.path.join(BP.PROJECT_ROOT,module) + "::" + testcase
+                testcase = os.path.join(BP.PROJECT_ROOT, module) + "::" + testcase
                 testcases.append(testcase)
         if run_config['REPORT_TYPE'] == 'ALLURE':
             pytest.main(['-v', '--alluredir={}'.format(BP.ALLURE_RESULT_DIR), *testcases])

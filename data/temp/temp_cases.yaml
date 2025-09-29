@@ -1,3 +1,6 @@
-test_suits/project_auto_client/test_01.py::TestCase:
-  comment: '"测试类1'
-  test_01: 测试用例1
+test_suits/student_management_system/test_student_management.py::TestLogin:
+  comment: 登录类
+  test_01[login_data0]: 登录测试
+  test_01[login_data1]: 登录测试
+  test_01[login_data2]: 登录测试
+  test_01[login_data3]: 登录测试

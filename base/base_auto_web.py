@@ -17,7 +17,7 @@ from selenium.common.exceptions import TimeoutException      # 超时异常
 
 # ---------- 业务基础模块 ----------
 from base.base_data import DataBase   # 读取 yaml/Excel 等测试数据基类
-from base_logger import Logger        # 自研日志封装
+from base.base_logger import Logger        # 自研日志封装
 
 # ---------- 日志对象 ----------
 logger = Logger('base_auto_web.py').get_logger()

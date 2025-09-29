@@ -12,8 +12,8 @@ import urllib3
 from urllib.parse import urljoin          # 拼接相对/绝对 URL
 from urllib3.exceptions import InsecureRequestWarning  # 关闭 HTTPS 警告用
 
-from base_data import DataBase            # 读取 YAML/Excel 基础类
-from base_logger import Logger            # 自研日志封装
+from base.base_data import DataBase            # 读取 YAML/Excel 基础类
+from base.base_logger import Logger            # 自研日志封装
 
 # 生成当前文件的日志实例
 logger = Logger('base_auto_api.py').get_logger()

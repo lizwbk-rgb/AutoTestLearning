@@ -15,10 +15,10 @@ import os
 import time
 import pyautogui
 import pyperclip
-from base_data import DataBase          # 基础数据层（读取路径、配置等）
-from utils import *                     # 工具函数
-from base_logger import Logger          # 统一日志
-from base_path import BasePath as BP    # 项目路径常量
+from base.base_data import DataBase  # 基础数据层（读取路径、配置等）
+from base.utils import *  # 工具函数
+from base.base_logger import Logger  # 统一日志
+from base.base_path import BasePath as BP  # 项目路径常量
 
 # ---------------------------- 日志初始化 ----------------------------
 logger = Logger('base_auto_client.py').get_logger()
@@ -37,11 +37,11 @@ class Locator(DataBase):
         super().__init__()
         # 读取 config.ini 中的「客户端自动化配置」
         cfg = self.config['客户端自动化配置']
-        self.duration = float(cfg['duration'])        # 鼠标移动/拖拽的动画时长
-        self.interval = float(cfg['interval'])        # 两次点击之间的间隔
+        self.duration = float(cfg['duration'])  # 鼠标移动/拖拽的动画时长
+        self.interval = float(cfg['interval'])  # 两次点击之间的间隔
         self.min_search_time = float(cfg['minSearchTime'])  # 图像识别最大等待时间
-        self.confidence = float(cfg['confidence'])    # 图像识别置信度阈值
-        self.gray_scale = bool(cfg['grayScale'])      # 是否启用灰度匹配
+        self.confidence = float(cfg['confidence'])  # 图像识别置信度阈值
+        self.gray_scale = bool(cfg['grayScale'])  # 是否启用灰度匹配
 
     # -------------------- 路径合法性检查 --------------------
     def is_path_exist(self, element: str) -> str:
@@ -105,42 +105,44 @@ class Operator(Locator):
     """
 
     # -------------------- 单击/双击图标 --------------------
-    def icon_click(self, element: str, position, clicks: int = 1,
-                   is_click: bool = True, button: str = 'left'):
+    def positioner_click(self, positioner: str, clicks: int = 1,
+                         is_click: bool = True, button: str = 'left'):
         """
         移动到图标中心并点击。
-        :param element: 图片文件名（仅用于日志与异常）
-        :param position: 已识别的坐标 (x, y)
+        :param positioner: 定位图片文件名（仅用于日志与异常）
+        :param relate_position: 已识别的坐标 (x, y)
         :param clicks: 点击次数
         :param is_click: False 则只移动不点击
         :param button: 'left'|'right'|'middle'
         """
-        if not position:
-            _error_record(element, 'click')
+        _position = self.is_object_exist(positioner, search_time=5)
 
-        pyautogui.moveTo(*position)
+        if not _position:
+            _error_record(positioner, 'click')
+
+        pyautogui.moveTo(*_position)
         if is_click:
-            pyautogui.click(*position,
+            pyautogui.click(*_position,
                             clicks=clicks,
                             button=button,
                             duration=self.duration,
                             interval=self.interval)
-        logger.debug('鼠标移动到 %s 并点击 %s 次（%s）', element, clicks, button)
+        logger.debug('鼠标移动到 %s 并点击 %s 次（%s）', positioner, clicks, button)
 
     # -------------------- 相对偏移点击 --------------------
-    def rel_icon_click(self, positioned_element: str,
-                       rel_x: int = 0, rel_y: int = 0,
-                       clicks: int = 1, is_click: bool = True,
-                       button: str = 'left'):
+    def rel_positioner_click(self, positioner: str,
+                             rel_x: int = 0, rel_y: int = 0,
+                             clicks: int = 1, is_click: bool = True,
+                             button: str = 'left'):
         """
         先识别基准图，再相对偏移 (rel_x, rel_y) 点击。
         """
-        element_position = self.is_object_exist(positioned_element)
-        if not element_position:
-            _error_record(positioned_element, 'rel_pos_click')
+        position = self.is_object_exist(positioner)
+        if not position:
+            _error_record(positioner, 'rel_pos_click')
 
         # 先移动到元素中心，再相对偏移
-        pyautogui.moveTo(*element_position, duration=self.duration)
+        pyautogui.moveTo(*position, duration=self.duration)
         pyautogui.moveRel(rel_x, rel_y, duration=self.duration)
         if is_click:
             pyautogui.click(clicks=clicks,
@@ -148,7 +150,7 @@ class Operator(Locator):
                             duration=self.duration,
                             interval=self.interval)
         logger.debug('定位元素 %s，原位置 %s，偏移 %s，点击 %s 次',
-                     positioned_element, element_position, (rel_x, rel_y), clicks)
+                     positioner, position, (rel_x, rel_y), clicks)
 
     # -------------------- 绝对坐标点击 --------------------
     def position_click(self, pos_x: int = None, pos_y: int = None,
@@ -255,6 +257,6 @@ if __name__ == '__main__':
 
     # 3. 找到后双击
     if position:
-        time.sleep(5)   # 给用户时间切到桌面
+        time.sleep(5)  # 给用户时间切到桌面
         op = Operator()
-        op.icon_click(element='qq.png', position=position, clicks=2)
+        op.positioner_click('qq.png', clicks=2)
