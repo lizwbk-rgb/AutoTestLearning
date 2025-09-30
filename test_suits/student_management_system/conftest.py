@@ -7,6 +7,7 @@ from page_object.student_management_system.client_start_stop import ClientStartS
 def client():
     client = ClientStartStopPage()
     client.start_client()
+    time.sleep(1)
     yield
     client.close_client()
     time.sleep(1)

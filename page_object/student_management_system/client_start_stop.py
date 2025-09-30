@@ -43,11 +43,32 @@ class ClientStartStopPage(Operator, Locator):
             assert self.is_object_exist('teacher_login_success')
             logger.info('【断言】教师账号登录成功！')
 
+    def register(self, username, age, user_id, password):
+        self.positioner_click('register')
+        if isinstance(self.is_object_exist('register_window'), bool):
+            logger.info('注册窗口打开成功')
+        else:
+            logger.error('注册窗口打开失败')
+        self.rel_positioner_click('username', 200)
+        self.text_input(username)
+        logger.info('姓名{}输入成功！'.format(username))
+        self.rel_positioner_click('age', 200)
+        self.text_input(age)
+        logger.info('姓名{}的年龄{}输入成功！'.format(username, age))
+        self.rel_positioner_click('user_id', 200)
+        self.text_input(user_id)
+        logger.info('姓名{}的学号{}输入成功！'.format(username, user_id))
+        self.rel_positioner_click('password', 200)
+        self.text_input(password)
+        logger.info('姓名{}的密码{}输入成功！'.format(username, password))
+        self.positioner_click('confirm_register')
+        self.positioner_click('confirm')
+
 
 if __name__ == '__main__':
     client = ClientStartStopPage()
     client.start_client()
     time.sleep(2)
-    client.load_client('123456', '123')
+    client.register('0', '0', '123456789204', '123')
     time.sleep(2)
     client.close_client()
